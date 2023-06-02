@@ -1,0 +1,69 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <link th:href="@{/css/bootstrap.min.css}"
+          href="../css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            max-width: 560px;
+        }
+        .field-error {
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <form th:action="@{/loginForm}" method="get">
+        <div style="text-align: right;">
+            <button type="submit" class="btn btn-primary btn-block">로그인</button>
+        </div>
+    </form>
+
+    <div>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>사이트</th>
+                <th>설명</th>
+                <th></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="bookmark : ${bookmarks}">
+                <td>
+                    <a th:href="${bookmark.siteUrl}" target="_blank">
+                        <label th:text="${bookmark.siteUrl}"/>
+                    </a>
+                </td>
+                <td th:text="${bookmark.explanation}"></td>
+                <td>
+                    <form th:action="@{/test/{id}/update (id=${bookmark.id})}" method="get">
+                        <button class="btn btn-primary btn-xs">수정</button>
+                    </form>
+                </td>
+                <td>
+                    <form th:action="@{/test/{id}/delete (id=${bookmark.id})}" method="post">
+                        <button class="btn btn-danger btn-block btn-xs">X</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <form th:action="@{/test/create}" method="get">
+        <div style="text-align: right;">
+            <button type="submit" class="btn btn-primary btn-block">북마크 추가</button>
+        </div>
+    </form>
+
+</div> <!-- /container -->
+
+</body>
+</html>
