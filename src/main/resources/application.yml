@@ -48,5 +48,5 @@ spring:
 
 
 file:
-  dir: /home/ec2-user/Bookmark/Project/src/main/resources/static/icon/
+  dir: /home/ec2-user/BookmarkProject/src/main/resources/static/icon/
 #  dir: C:/Users/\uD55C\uC0C1\uD604/Desktop/\uD1A0\uC774 \uD504\uB85C\uC81D\uD2B8/\uBD81\uB9C8\uD06C/bookmark/src/main/resources/static/icon/
