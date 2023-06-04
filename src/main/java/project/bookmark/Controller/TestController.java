@@ -33,11 +33,11 @@ public class TestController {
     public String testList(Model model){
         List<Bookmark> all = testService.findAll();
         model.addAttribute("bookmarks", all);
-        return "/test/listForm";
+        return "test/listForm";
     }
 
     @GetMapping("/test/create")
-    public String createForm(@ModelAttribute CreateForm createForm){ return "/test/createForm"; }
+    public String createForm(@ModelAttribute CreateForm createForm){ return "test/createForm"; }
 
     @PostMapping("/test/create")
     public String create(@Validated @ModelAttribute CreateForm createForm, BindingResult bindingResult){
@@ -58,13 +58,13 @@ public class TestController {
 
         model.addAttribute("updateForm", updateForm);
 
-        return "/test/updateForm";
+        return "test/updateForm";
     }
 
     @PostMapping("/test/{id}/update")
     public String update(@PathVariable Long id, @Validated @ModelAttribute UpdateForm updateForm, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
-            return "/test/updateForm";
+            return "test/updateForm";
         }
 
         testService.update(id, updateForm);

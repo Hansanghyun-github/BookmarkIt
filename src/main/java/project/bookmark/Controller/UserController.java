@@ -35,7 +35,7 @@ public class UserController {
     UserRepository userRepository; // TODO 서비스 구현해서 바꾸기, 지금은 임시방편
 
     @GetMapping("/")
-    public String mainForm(){ return "/mainForm"; }
+    public String mainForm(){ return "mainForm"; }
 
     @GetMapping("/joinForm")
     public String joinForm(@ModelAttribute JoinForm joinDto){
@@ -64,7 +64,7 @@ public class UserController {
 
         if(bindingResult.hasErrors()){
             log.info("errors={}", bindingResult);
-            return "/joinForm";
+            return "joinForm";
         }
 
         // 성공 로직

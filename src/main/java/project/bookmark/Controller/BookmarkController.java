@@ -39,18 +39,18 @@ public class BookmarkController {
         Long user_id = principal.getUser().getId();
         List<Bookmark> bookmarks = bookmarkService.findAll(user_id);
         model.addAttribute("bookmarks", bookmarks);
-        return "/bookmarks/listForm";
+        return "bookmarks/listForm";
     }
 
     @GetMapping("/bookmarks/create")
-    public String createForm(@ModelAttribute CreateForm createForm){ return "/bookmarks/createForm"; }
+    public String createForm(@ModelAttribute CreateForm createForm){ return "bookmarks/createForm"; }
 
     @PostMapping("/bookmarks/create")
     public String create(
             @AuthenticationPrincipal PrincipalDetails principal,
             @Validated @ModelAttribute CreateForm createForm, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
-            return "/bookmarks/createForm";
+            return "bookmarks/createForm";
         }
 
         Long user_id = principal.getUser().getId();
@@ -69,7 +69,7 @@ public class BookmarkController {
 
         model.addAttribute("updateForm", updateForm);
 
-        return "/bookmarks/updateForm";
+        return "bookmarks/updateForm";
     }
 
     @PostMapping("/bookmarks/{id}/update")
