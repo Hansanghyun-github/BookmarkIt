@@ -38,14 +38,13 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-    properties:
-      hibernate:
-        format_sql: true
-        show_sql: true
+    open-in-view: false
   output:
     ansi:
       enabled: always
 
+logging.level:
+  root: warn
 
 file:
   dir: /home/ec2-user/BookmarkProject/src/main/resources/static/icon/
