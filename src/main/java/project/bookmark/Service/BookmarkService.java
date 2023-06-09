@@ -1,9 +1,7 @@
 package project.bookmark.Service;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.bookmark.Domain.Bookmark;
@@ -11,7 +9,6 @@ import project.bookmark.Domain.User;
 import project.bookmark.Form.CreateForm;
 import project.bookmark.Form.UpdateForm;
 import project.bookmark.Repository.BookmarkRepository;
-import project.bookmark.Repository.BookmarkSearchCond;
 import project.bookmark.Repository.UserRepository;
 
 import java.util.List;
@@ -39,7 +36,7 @@ public class BookmarkService {
             log.warn("save 중 해당 유저 객체 없음");
             return null;
         }
-        bookmark.setUser(user.get());
+        bookmark.setBookmark(user.get());
         return bookmarkRepository.save(bookmark);
     }
 

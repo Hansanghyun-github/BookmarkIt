@@ -5,8 +5,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "bookmarks")
@@ -24,8 +22,20 @@ public class Bookmark {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public void setUser(User user){
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "directory_id")
+    private Directory directory;
+
+    public void setBookmark(User user){
         this.user=user;
         user.getBookmarks().add(this);
+    }
+
+    public void setBookmark(User user, Directory directory){
+        this.user=user;
+        user.getBookmarks().add(this);
+
+        this.directory=directory;
+        directory.getBookmarks().add(this);
     }
 }

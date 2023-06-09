@@ -27,7 +27,10 @@ public class User {
     private Timestamp createDate;
 
     @OneToMany(mappedBy = "user")
-    private List<Bookmark> bookmarks=new ArrayList<>();
+    private List<Bookmark> bookmarks = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<Directory> directories = new ArrayList<>();
 
     @Override
     public String toString() {
