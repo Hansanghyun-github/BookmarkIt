@@ -26,12 +26,12 @@ public class Bookmark {
     @JoinColumn(name = "directory_id")
     private Directory directory;
 
-    public void setBookmark(User user){
+    public void setUser(User user){
         this.user=user;
         user.getBookmarks().add(this);
     }
 
-    public void setBookmark(User user, Directory directory){
+    public void setUser(User user, Directory directory){
         this.user=user;
         user.getBookmarks().add(this);
 

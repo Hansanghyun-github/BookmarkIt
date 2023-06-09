@@ -36,7 +36,7 @@ public class BookmarkService {
             log.warn("save 중 해당 유저 객체 없음");
             return null;
         }
-        bookmark.setBookmark(user.get());
+        bookmark.setUser(user.get());
         return bookmarkRepository.save(bookmark);
     }
 

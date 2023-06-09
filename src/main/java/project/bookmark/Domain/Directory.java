@@ -21,7 +21,7 @@ public class Directory {
     @OneToMany(mappedBy = "bookmark")
     private List<Bookmark> bookmarks;
 
-    public void setDirectory(User user){
+    public void setUser(User user){
         this.user=user;
         user.getDirectories().add(this);
     }
