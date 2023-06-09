@@ -13,7 +13,7 @@ public class Directory {
     @Column(name = "directory_id")
     private Long id;
     private String directoryName;
-    private String prevDirectoryName;
+    private Long prevDirectoryId;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -24,5 +24,14 @@ public class Directory {
     public void setDirectory(User user){
         this.user=user;
         user.getDirectories().add(this);
+    }
+
+    @Override
+    public String toString() {
+        return "Directory{" +
+                "id=" + id +
+                ", directoryName='" + directoryName + '\'' +
+                ", prevDirectoryId=" + prevDirectoryId +
+                '}';
     }
 }
