@@ -11,4 +11,6 @@ public class CreateForm {
     private String siteUrl;
     @NotBlank
     private String explanation;
+
+    private Long directory_id;
 }

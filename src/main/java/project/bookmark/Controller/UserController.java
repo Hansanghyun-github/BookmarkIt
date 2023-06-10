@@ -16,6 +16,7 @@ import project.bookmark.Domain.User;
 import project.bookmark.Form.JoinForm;
 import project.bookmark.Form.LoginForm;
 import project.bookmark.Repository.UserRepository;
+import project.bookmark.Service.DirectoryService;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -33,6 +34,9 @@ public class UserController {
     BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
     UserRepository userRepository; // TODO 서비스 구현해서 바꾸기, 지금은 임시방편
+
+    @Autowired
+    DirectoryService directoryService;
 
     @GetMapping("/")
     public String mainForm(){ return "mainForm"; }
@@ -78,9 +82,11 @@ public class UserController {
                 .email(joinForm.getEmail())
                 .role(Role.ROLE_USER)
                 .bookmarks(new ArrayList<>())
+                .directories(new ArrayList<>())
                 .build();
 
-        userRepository.save(user);
+        User save = userRepository.save(user);
+        directoryService.createRootDirectory(save.getId());
 
         return "redirect:/loginForm";
     }

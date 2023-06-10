@@ -31,7 +31,7 @@ public class Bookmark {
         user.getBookmarks().add(this);
     }
 
-    public void setUser(User user, Directory directory){
+    public void setUserAndDirectory(User user, Directory directory){
         this.user=user;
         user.getBookmarks().add(this);
 

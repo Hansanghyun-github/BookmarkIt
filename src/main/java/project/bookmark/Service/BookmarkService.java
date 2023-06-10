@@ -5,10 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.bookmark.Domain.Bookmark;
+import project.bookmark.Domain.Directory;
 import project.bookmark.Domain.User;
 import project.bookmark.Form.CreateForm;
 import project.bookmark.Form.UpdateForm;
 import project.bookmark.Repository.BookmarkRepository;
+import project.bookmark.Repository.DirectoryRepository;
 import project.bookmark.Repository.UserRepository;
 
 import java.util.List;
@@ -20,11 +22,13 @@ import java.util.Optional;
 public class BookmarkService {
     final BookmarkRepository bookmarkRepository;
     final UserRepository userRepository;
+    final DirectoryRepository directoryRepository;
 
     @Autowired
-    public BookmarkService(BookmarkRepository bookmarkRepository, UserRepository userRepository) {
+    public BookmarkService(BookmarkRepository bookmarkRepository, UserRepository userRepository, DirectoryRepository directoryRepository) {
         this.bookmarkRepository = bookmarkRepository;
         this.userRepository = userRepository;
+        this.directoryRepository = directoryRepository;
     }
 
     public Bookmark save(Long user_id, CreateForm createForm){
@@ -32,11 +36,16 @@ public class BookmarkService {
         bookmark.setSiteUrl(createForm.getSiteUrl());
         bookmark.setExplanation(createForm.getExplanation());
         Optional<User> user = userRepository.findById(user_id);
+        Optional<Directory> directory = directoryRepository.findById(createForm.getDirectory_id());
         if(user.isEmpty()){
             log.warn("save 중 해당 유저 객체 없음");
             return null;
         }
-        bookmark.setUser(user.get());
+        if(directory.isEmpty()){
+            log.warn("save 중 해당 디렉토리 객체 없음");
+            return null;
+        }
+        bookmark.setUserAndDirectory(user.get(), directory.get());
         return bookmarkRepository.save(bookmark);
     }
 

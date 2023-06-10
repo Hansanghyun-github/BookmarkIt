@@ -11,7 +11,9 @@ import project.bookmark.Config.auth.PrincipalDetails;
 import project.bookmark.Domain.Role;
 import project.bookmark.Domain.User;
 import project.bookmark.Repository.UserRepository;
+import project.bookmark.Service.DirectoryService;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 
@@ -20,6 +22,9 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private DirectoryService directoryService;
 
     // OAuth2 인증 성공했을때 실행되는 함수
     @Override // TODO 구글 검증, 다른 검증 인터페이스 추가해서 제대로 정리하기
@@ -45,9 +50,12 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
                     .role(Role.ROLE_USER)
                     .provider(provider)
                     .providerId(providerId)
+                    .bookmarks(new ArrayList<>())
+                    .directories(new ArrayList<>())
                     .build());
-            
-            userRepository.save(user.get());
+
+            User save = userRepository.save(user.get());
+            directoryService.createRootDirectory(save.getId());
         }
 
         return new PrincipalDetails(user.get(), oAuth2User.getAttributes());

@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,8 +19,8 @@ public class Directory {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "bookmark")
-    private List<Bookmark> bookmarks;
+    @OneToMany(mappedBy = "directory")
+    private List<Bookmark> bookmarks = new ArrayList<>();
 
     public void setUser(User user){
         this.user=user;
@@ -32,6 +33,7 @@ public class Directory {
                 "id=" + id +
                 ", directoryName='" + directoryName + '\'' +
                 ", prevDirectoryId=" + prevDirectoryId +
+                ", user=" + user +
                 '}';
     }
 }
