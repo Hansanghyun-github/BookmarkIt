@@ -23,7 +23,7 @@ logging.level:
   org.hibernate.type: trace #스프링 부트 2.x, hibernate5
 
 file:
-  dir: C:/Users/한상현/Desktop/토이 프로젝트/북마크/bookmark/src/main/resources/static/icon/
+  dir: C:/Users/한상현/Desktop/ToyProject/BookmarkProject/bookmark/src/main/resources/static/icon/
 
 ---
 spring:
