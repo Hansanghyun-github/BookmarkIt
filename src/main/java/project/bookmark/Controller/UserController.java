@@ -16,7 +16,6 @@ import project.bookmark.Domain.User;
 import project.bookmark.Form.JoinForm;
 import project.bookmark.Form.LoginForm;
 import project.bookmark.Form.UserForm;
-import project.bookmark.Repository.UserRepository;
 import project.bookmark.Service.DirectoryService;
 import project.bookmark.Service.UserService;
 
@@ -34,15 +33,12 @@ public class UserController {
 
     final private BCryptPasswordEncoder bCryptPasswordEncoder;
     final private UserService userService;
-    final private DirectoryService directoryService;
     @Autowired
     public UserController(
             BCryptPasswordEncoder bCryptPasswordEncoder,
-            UserService userService,
-            DirectoryService directoryService) {
+            UserService userService) {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.userService = userService;
-        this.directoryService = directoryService;
     }
 
     @GetMapping("/")
@@ -87,8 +83,7 @@ public class UserController {
                 .password(password)
                 .build();
 
-        User save = userService.save(userForm);
-        directoryService.createRootDirectory(save.getId());
+        userService.save(userForm);
 
         return "redirect:/loginForm";
     }

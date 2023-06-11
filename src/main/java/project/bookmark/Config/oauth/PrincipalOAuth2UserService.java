@@ -9,11 +9,8 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import project.bookmark.Config.auth.PrincipalDetails;
-import project.bookmark.Domain.Role;
 import project.bookmark.Domain.User;
 import project.bookmark.Form.UserForm;
-import project.bookmark.Repository.UserRepository;
-import project.bookmark.Service.DirectoryService;
 import project.bookmark.Service.UserService;
 
 import java.util.ArrayList;
@@ -25,11 +22,9 @@ import java.util.Optional;
 public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
 
     final private UserService userService;
-    final private DirectoryService directoryService;
     @Autowired
-    public PrincipalOAuth2UserService(UserService userService, DirectoryService directoryService) {
+    public PrincipalOAuth2UserService(UserService userService) {
         this.userService = userService;
-        this.directoryService = directoryService;
     }
 
     // OAuth2 인증 성공했을때 실행되는 함수
@@ -46,7 +41,7 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
         User save;
 
         if(userService.isDuplicate(username) == false){ // 강제 회원가입
-            log.info("OAuth2 user 강제 회원가입 진행");
+            log.info("OAuth2 user forced join");
             String email = oAuth2User.getAttribute("email");
 
             UserForm userForm = UserForm.builder()
@@ -56,7 +51,6 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
                     .build();
 
             save = userService.save(userForm);
-            directoryService.createRootDirectory(save.getId());
         }
         else // TODO 너무 비효율적인데 - duplicate, find 2번임
             save = userService.findByUsername(username).get();

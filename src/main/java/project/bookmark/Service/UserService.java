@@ -9,7 +9,6 @@ import project.bookmark.Domain.User;
 import project.bookmark.Form.UserForm;
 import project.bookmark.Repository.UserRepository;
 
-import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,12 +18,12 @@ import java.util.Optional;
 @Slf4j
 public class UserService {
     final private UserRepository userRepository;
-    //final private DirectoryService directoryService;
+    final private DirectoryService directoryService;
 
     @Autowired
-    public UserService(UserRepository userRepository/*, DirectoryService directoryService*/) {
+    public UserService(UserRepository userRepository,DirectoryService directoryService) {
         this.userRepository = userRepository;
-        //this.directoryService = directoryService;
+        this.directoryService = directoryService;
     }
 
     public User save(UserForm userForm){
@@ -34,11 +33,11 @@ public class UserService {
                 .email(userForm.getEmail())
                 .role(Role.ROLE_USER)
                 .bookmarks(new ArrayList<>())
-                //.directories(new ArrayList<>())
+                .directories(new ArrayList<>())
                 .build();
 
         User save = userRepository.save(user);
-        //directoryService.createRootDirectory(save.getId());
+        directoryService.createRootDirectory(save.getId());
 
         return save;
     }
