@@ -15,8 +15,10 @@ import project.bookmark.Domain.Role;
 import project.bookmark.Domain.User;
 import project.bookmark.Form.JoinForm;
 import project.bookmark.Form.LoginForm;
+import project.bookmark.Form.UserForm;
 import project.bookmark.Repository.UserRepository;
 import project.bookmark.Service.DirectoryService;
+import project.bookmark.Service.UserService;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -30,13 +32,18 @@ public class UserController {
      * TODO 로그인 된 상태로 loginForm 갔을때 로그인 또 못하게
      */
 
+    final private BCryptPasswordEncoder bCryptPasswordEncoder;
+    final private UserService userService;
+    final private DirectoryService directoryService;
     @Autowired
-    BCryptPasswordEncoder bCryptPasswordEncoder;
-    @Autowired
-    UserRepository userRepository; // TODO 서비스 구현해서 바꾸기, 지금은 임시방편
-
-    @Autowired
-    DirectoryService directoryService;
+    public UserController(
+            BCryptPasswordEncoder bCryptPasswordEncoder,
+            UserService userService,
+            DirectoryService directoryService) {
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.userService = userService;
+        this.directoryService = directoryService;
+    }
 
     @GetMapping("/")
     public String mainForm(){ return "mainForm"; }
@@ -55,8 +62,7 @@ public class UserController {
         }
 
         // 회원 중복 체크
-        Optional<User> duplicateUser = userRepository.findByUsername(joinForm.getUsername());
-        if(duplicateUser.isPresent()){
+        if(userService.isDuplicate(joinForm.getUsername())){
             //bindingResult.reject("duplicateUser", null, null);
             bindingResult.rejectValue("username", "duplicateUser", null, null);
         }
@@ -75,17 +81,13 @@ public class UserController {
         log.info("user join");
 
         String password = bCryptPasswordEncoder.encode(joinForm.getPassword());
-
-        User user = User.builder()
+        UserForm userForm = UserForm.builder()
                 .username(joinForm.getUsername())
-                .password(password)
                 .email(joinForm.getEmail())
-                .role(Role.ROLE_USER)
-                .bookmarks(new ArrayList<>())
-                .directories(new ArrayList<>())
+                .password(password)
                 .build();
 
-        User save = userRepository.save(user);
+        User save = userService.save(userForm);
         directoryService.createRootDirectory(save.getId());
 
         return "redirect:/loginForm";

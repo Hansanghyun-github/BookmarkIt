@@ -11,8 +11,10 @@ import org.springframework.stereotype.Service;
 import project.bookmark.Config.auth.PrincipalDetails;
 import project.bookmark.Domain.Role;
 import project.bookmark.Domain.User;
+import project.bookmark.Form.UserForm;
 import project.bookmark.Repository.UserRepository;
 import project.bookmark.Service.DirectoryService;
+import project.bookmark.Service.UserService;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -22,11 +24,13 @@ import java.util.Optional;
 @Slf4j
 public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
 
+    final private UserService userService;
+    final private DirectoryService directoryService;
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private DirectoryService directoryService;
+    public PrincipalOAuth2UserService(UserService userService, DirectoryService directoryService) {
+        this.userService = userService;
+        this.directoryService = directoryService;
+    }
 
     // OAuth2 인증 성공했을때 실행되는 함수
     @Override // TODO 구글 검증, 다른 검증 인터페이스 추가해서 제대로 정리하기
@@ -38,29 +42,26 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
         String providerId = oAuth2User.getAttribute("sub"); // 1265~
         String username = provider + "_" + providerId; // google_12654894~
 
-        Optional<User> user = userRepository.findByUsername(username);
 
-        if(user.isEmpty()){ // 강제 회원가입
-            log.info("OAuth2 user forced join");
+        User save;
+
+        if(userService.isDuplicate(username) == false){ // 강제 회원가입
+            log.info("OAuth2 user 강제 회원가입 진행");
             String email = oAuth2User.getAttribute("email");
 
-            user = Optional.of(
-                    User.builder()
+            UserForm userForm = UserForm.builder()
                     .username(username)
-                    .password("OAuth2_anythingWord") // TODO 랜덤하게 바꿔주기
                     .email(email)
-                    .role(Role.ROLE_USER)
-                    .provider(provider)
-                    .providerId(providerId)
-                    .bookmarks(new ArrayList<>())
-                    .directories(new ArrayList<>())
-                    .build());
+                    .password("OAuth2_anythingWord")
+                    .build();
 
-            User save = userRepository.save(user.get());
+            save = userService.save(userForm);
             directoryService.createRootDirectory(save.getId());
         }
+        else // TODO 너무 비효율적인데 - duplicate, find 2번임
+            save = userService.findByUsername(username).get();
 
-        return new PrincipalDetails(user.get(), oAuth2User.getAttributes());
+        return new PrincipalDetails(save, oAuth2User.getAttributes());
     }
 
 }
