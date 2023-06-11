@@ -13,11 +13,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import project.bookmark.Config.auth.PrincipalDetails;
 import project.bookmark.Domain.Bookmark;
+import project.bookmark.Domain.Directory;
 import project.bookmark.Domain.User;
 import project.bookmark.Form.CreateForm;
 import project.bookmark.Form.UpdateForm;
 import project.bookmark.Repository.BookmarkSearchCond;
 import project.bookmark.Service.BookmarkService;
+import project.bookmark.Service.DirectoryService;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,10 +28,11 @@ import java.util.Optional;
 @Slf4j
 public class BookmarkController {
     final BookmarkService bookmarkService;
-
+    final DirectoryService directoryService;
     @Autowired
-    public BookmarkController(BookmarkService bookmarkService) {
+    public BookmarkController(BookmarkService bookmarkService, DirectoryService directoryService) {
         this.bookmarkService = bookmarkService;
+        this.directoryService = directoryService;
     }
 
     @GetMapping("/bookmarks")
@@ -38,7 +41,9 @@ public class BookmarkController {
             Model model) {
         Long user_id = principal.getUser().getId();
         List<Bookmark> bookmarks = bookmarkService.findAll(user_id);
+        List<Directory> directories = directoryService.findByUserId(user_id);
         model.addAttribute("bookmarks", bookmarks);
+        model.addAttribute("directories", directories);
         return "bookmarks/listForm";
     }
 
