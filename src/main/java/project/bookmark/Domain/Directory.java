@@ -33,7 +33,6 @@ public class Directory {
                 "id=" + id +
                 ", directoryName='" + directoryName + '\'' +
                 ", prevDirectoryId=" + prevDirectoryId +
-                ", user=" + user +
                 '}';
     }
 }

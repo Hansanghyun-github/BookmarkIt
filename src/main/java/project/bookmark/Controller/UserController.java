@@ -72,7 +72,7 @@ public class UserController {
         }
 
         // 성공 로직
-        System.out.println("--------------------------- join user ---------------------------");
+        log.info("user join");
 
         String password = bCryptPasswordEncoder.encode(joinForm.getPassword());
 

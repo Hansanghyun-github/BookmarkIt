@@ -39,11 +39,16 @@ public class BookmarkController {
     public String bookmarks(
             @AuthenticationPrincipal PrincipalDetails principal,
             Model model) {
+        log.info("bookmark list");
         Long user_id = principal.getUser().getId();
+
+        // TODO bookmark and directory call same Service (to Transaction and PersistenceContext)
         List<Bookmark> bookmarks = bookmarkService.findAll(user_id);
+        log.info("find all directory");
         List<Directory> directories = directoryService.findByUserId(user_id);
         model.addAttribute("bookmarks", bookmarks);
         model.addAttribute("directories", directories);
+
         return "bookmarks/listForm";
     }
 
@@ -57,6 +62,7 @@ public class BookmarkController {
         if(bindingResult.hasErrors()){
             return "bookmarks/createForm";
         }
+        log.info("bookmark create");
 
         Long user_id = principal.getUser().getId();
 
@@ -82,6 +88,7 @@ public class BookmarkController {
         if(bindingResult.hasErrors()){
             return "bookmarks/updateForm";
         }
+        log.info("bookmark update");
 
         bookmarkService.update(id, updateForm);
         return "redirect:/bookmarks";
@@ -89,6 +96,7 @@ public class BookmarkController {
 
     @PostMapping("/bookmarks/{id}/delete")
     public String delete(@PathVariable Long id){
+        log.info("bookmark delete");
         bookmarkService.delete(id);
         return "redirect:/bookmarks";
     }

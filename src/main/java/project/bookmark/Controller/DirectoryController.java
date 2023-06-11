@@ -1,5 +1,6 @@
 package project.bookmark.Controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -13,6 +14,7 @@ import project.bookmark.Form.DirectoryForm;
 import project.bookmark.Service.DirectoryService;
 
 @Controller
+@Slf4j
 public class DirectoryController {
     final private DirectoryService directoryService;
     @Autowired
@@ -33,6 +35,7 @@ public class DirectoryController {
         if(bindingResult.hasErrors()){
             return "directories/createForm";
         }
+        log.info("directory create");
 
         Long user_id = principal.getUser().getId();
         directoryService.save(user_id, directoryForm);

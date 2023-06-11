@@ -55,6 +55,12 @@ public class BookmarkService {
 
     public List<Bookmark> findAll(Long user_id){
         List<Bookmark> bookmarks = bookmarkRepository.findAll(user_id);
+        log.info("call bookmark's directory because of LAZY initialization");
+        Directory directory;
+        for(int i=0;i<bookmarks.size();i++){
+            directory = bookmarks.get(i).getDirectory();
+            log.info("\n" + directory);
+        }
         return bookmarks;
     }
 

@@ -1,5 +1,6 @@
 package project.bookmark.Config.oauth;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -18,6 +19,7 @@ import java.util.Optional;
 
 
 @Service
+@Slf4j
 public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
 
     @Autowired
@@ -30,7 +32,7 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
     @Override // TODO 구글 검증, 다른 검증 인터페이스 추가해서 제대로 정리하기
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
-        System.out.println("OAuth2 로그인");
+        log.info("OAuth2 login");
 
         String provider = userRequest.getClientRegistration().getClientId(); // google
         String providerId = oAuth2User.getAttribute("sub"); // 1265~
@@ -39,7 +41,7 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
         Optional<User> user = userRepository.findByUsername(username);
 
         if(user.isEmpty()){ // 강제 회원가입
-            System.out.println("강제 회원가입 진행");
+            log.info("OAuth2 user forced join");
             String email = oAuth2User.getAttribute("email");
 
             user = Optional.of(

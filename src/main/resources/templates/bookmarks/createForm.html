@@ -48,6 +48,14 @@
       </div>
       <label></label>
     </div>
+    <div class="form-group">
+      <label></label>
+      <input type="text" th:field="*{directory_id}" class="form-control" placeholder="디렉토리 id">
+      <div class="field-error" th:errors="*{directory_id}">
+        폴더_id 오류
+      </div>
+      <label></label>
+    </div>
 
     <button type="submit" class="btn btn-primary btn-block">추가</button>
   </form>

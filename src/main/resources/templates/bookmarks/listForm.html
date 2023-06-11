@@ -30,7 +30,7 @@
             <tr>
                 <th>사이트</th>
                 <th>설명</th>
-                <th></th>
+                <th>현재 폴더</th>
                 <th></th>
                 <th></th>
             </tr>
@@ -40,10 +40,10 @@
                 <td>
                     <a th:href="${bookmark.siteUrl}" target="_blank">
                         <label th:text="${bookmark.siteUrl}"/>
-                    </a>
+                        </a>
                 </td>
                 <td th:text="${bookmark.explanation}"></td>
-                <!--<td th:text="${bookmark.directory.id}"></td>-->
+                <td th:text="${bookmark.directory.directoryName}"></td>
                 <td>
                     <form th:action="@{/bookmarks/{id}/update (id=${bookmark.id})}" method="get">
                         <button class="btn btn-primary btn-xs">수정</button>
@@ -69,12 +69,14 @@
         <table class="table table-striped">
             <thead>
             <tr>
+                <th>폴더_id</th>
                 <th>폴더이름</th>
-                <th>이전번호</th>
+                <th>prev_id</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="directory : ${directories}">
+                <td th:text="${directory.id}"></td>
                 <td th:text="${directory.directoryName}"></td>
                 <td th:text="${directory.prevDirectoryId}"></td>
             </tr>
