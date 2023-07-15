@@ -64,6 +64,10 @@ public class DirectoryService {
         return directoryRepository.findAll();
     }
 
+    public List<Directory> findDirectoriesAndBookmarks() {
+        return directoryRepository.findBookmarksAndDirectories();
+    }
+
     public List<Directory> findByUserId(Long user_id){
         return directoryRepository.findByUserId(user_id);
     }

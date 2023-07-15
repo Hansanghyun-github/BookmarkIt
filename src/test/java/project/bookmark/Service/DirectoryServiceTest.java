@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import project.bookmark.Domain.Bookmark;
 import project.bookmark.Domain.Directory;
 import project.bookmark.Domain.Role;
 import project.bookmark.Domain.User;
@@ -12,6 +13,8 @@ import project.bookmark.Repository.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
@@ -59,6 +62,14 @@ class DirectoryServiceTest {
         for(int i=0;i<all2.size();i++)
             System.out.println(all2.get(i) + " ");
         System.out.println();
+
+    }
+
+    @Test
+    public void fetchJoinTest() throws Exception {
+        // given
+
+        // when
 
     }
 

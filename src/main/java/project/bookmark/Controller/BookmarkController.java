@@ -40,14 +40,12 @@ public class BookmarkController {
         /*Long user_id = principal.getUser().getId();*/
 
         // TODO bookmark and directory call same Service (to Transaction and PersistenceContext)
-        List<Bookmark> bookmarks = bookmarkService.findAll();
-        log.info("find all directory");
-        List<Directory> directories = directoryService.findAll();
+        List<Directory> directories = directoryService.findDirectoriesAndBookmarks();
 
         List<TBookmark> tBookmarks = new ArrayList<>();
         List<TDirectory> tDirectories = new ArrayList<>();
 
-        for(Bookmark it:bookmarks){
+        directories.forEach(d -> d.getBookmarks().forEach(it -> {
             TBookmark tBookmark = TBookmark.builder()
                     .id(it.getId())
                     .url(it.getUrl())
@@ -55,7 +53,7 @@ public class BookmarkController {
                     .directoryId(it.getDirectory().getId())
                     .build();
             tBookmarks.add(tBookmark);
-        }
+        }));
         for(Directory it:directories) {
             TDirectory tDirectory = TDirectory.builder()
                     .id(it.getId())

@@ -63,7 +63,11 @@ public class BookmarkService {
     }
 
     public void update(Long id, UpdateForm updateForm){
-        bookmarkRepository.update(id, updateForm);
+        Optional<Bookmark> byId = bookmarkRepository.findById(id);
+        if(byId.isEmpty()) return;
+        Bookmark bookmark = byId.get();
+        bookmark.setUrl(updateForm.getUrl());
+        bookmark.setName(updateForm.getName());
     }
 
     public List<Bookmark> findAll() {
@@ -77,7 +81,8 @@ public class BookmarkService {
     }
 
     public List<Bookmark> findAll(Long user_id){
-        List<Bookmark> bookmarks = bookmarkRepository.findAll(user_id);
+        // TODO using user_id
+        List<Bookmark> bookmarks = bookmarkRepository.findByUserId(user_id);
         log.info("call bookmark's directory because of LAZY initialization");
         Directory directory;
         for(int i=0;i<bookmarks.size();i++){
@@ -93,7 +98,7 @@ public class BookmarkService {
     }
 
     public void delete(Long id){
-        bookmarkRepository.delete(id);
+        bookmarkRepository.deleteById(id);
     }
 
     public boolean isInvalidBookmarkId(Long id){
