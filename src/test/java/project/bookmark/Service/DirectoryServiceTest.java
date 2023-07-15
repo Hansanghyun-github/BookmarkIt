@@ -13,8 +13,6 @@ import project.bookmark.Repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 @Transactional
 class DirectoryServiceTest {
@@ -41,9 +39,9 @@ class DirectoryServiceTest {
         Long user_id2 = saved2.get().getId();
 
         DirectoryForm directoryForm1 = new DirectoryForm();
-        directoryForm1.setDirectoryName("new folder1");
+        directoryForm1.setName("new folder1");
         DirectoryForm directoryForm2 = new DirectoryForm();
-        directoryForm2.setDirectoryName("new folder2");
+        directoryForm2.setName("new folder2");
 
         directoryService.save(user_id1, directoryForm1);
         directoryService.save(user_id2, directoryForm2);

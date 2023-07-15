@@ -10,7 +10,6 @@ import project.bookmark.Form.UpdateForm;
 import project.bookmark.Repository.BookmarkRepository;
 import project.bookmark.Repository.BookmarkSearchCond;
 
-import java.awt.print.Book;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,8 +25,8 @@ public class TestService {
 
     public Bookmark save(CreateForm createForm){
         Bookmark bookmark = new Bookmark();
-        bookmark.setSiteUrl(createForm.getSiteUrl());
-        bookmark.setExplanation(createForm.getExplanation());
+        bookmark.setUrl(createForm.getUrl());
+        bookmark.setName(createForm.getName());
         return bookmarkRepository.save(bookmark);
     }
 
@@ -49,6 +48,6 @@ public class TestService {
     public void delete(Long id){
         Optional<Bookmark> bookmark = findById(id);
         if(bookmark.isEmpty()) return;
-        bookmarkRepository.delete(bookmark.get());
+        bookmarkRepository.delete(id);
     }
 }

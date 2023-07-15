@@ -25,6 +25,14 @@ public class DirectoryService {
         this.userRepository = userRepository;
     }
 
+    public Directory save(DirectoryForm directoryForm){
+
+        Directory directory=new Directory();
+        directory.setName(directoryForm.getName());
+        directory.setPrevDirectoryId(directoryForm.getPrevDirectoryId());
+        return directoryRepository.save(directory);
+    }
+
     public Directory save(Long user_id, DirectoryForm directoryForm){
         Optional<User> user = userRepository.findById(user_id);
         if(user.isEmpty()){
@@ -33,7 +41,7 @@ public class DirectoryService {
         }
 
         Directory directory=new Directory();
-        directory.setDirectoryName(directoryForm.getDirectoryName());
+        directory.setName(directoryForm.getName());
         directory.setPrevDirectoryId(directoryForm.getPrevDirectoryId());
         directory.setUser(user.get());
         return directoryRepository.save(directory);
@@ -44,7 +52,7 @@ public class DirectoryService {
         if(directory.isEmpty()){
             return;
         }
-        directory.get().setDirectoryName(directoryForm.getDirectoryName());
+        directory.get().setName(directoryForm.getName());
         directory.get().setPrevDirectoryId(directoryForm.getPrevDirectoryId());
     }
 
@@ -72,11 +80,16 @@ public class DirectoryService {
         }
 
         Directory directory = new Directory();
-        directory.setDirectoryName("root");
+        directory.setName("root");
         directory.setUser(user.get());
         Directory save = directoryRepository.save(directory);
         save.setPrevDirectoryId(save.getId());
 
         return save.getId();
+    }
+
+    public boolean isInvalidDirectoryId(Long id){
+        Optional<Directory> directory = directoryRepository.findById(id);
+        return directory.isEmpty();
     }
 }

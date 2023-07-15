@@ -15,8 +15,8 @@ public class Bookmark {
     @Id @GeneratedValue
     @Column(name = "bookmark_id")
     private Long id;
-    private String siteUrl;
-    private String explanation;
+    private String url;
+    private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -29,6 +29,11 @@ public class Bookmark {
     public void setUser(User user){
         this.user=user;
         user.getBookmarks().add(this);
+    }
+
+    public  void setDirectory(Directory directory){
+        this.directory = directory;
+        directory.getBookmarks().add(this);
     }
 
     public void setUserAndDirectory(User user, Directory directory){

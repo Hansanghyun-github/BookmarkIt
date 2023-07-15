@@ -1,6 +1,5 @@
 package project.bookmark.Service;
 
-import org.aspectj.lang.annotation.Before;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,11 +13,8 @@ import project.bookmark.Form.CreateForm;
 import project.bookmark.Form.UpdateForm;
 import project.bookmark.Repository.UserRepository;
 
-import java.awt.print.Book;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class BookmarkServiceTest {
@@ -48,8 +44,8 @@ class BookmarkServiceTest {
         User saved2 = userRepository.save(user2);
         System.out.println("------------------ after user save -------------------");
         CreateForm createForm1 = new CreateForm();
-        createForm1.setExplanation("explain1");
-        createForm1.setSiteUrl("site1");
+        createForm1.setName("explain1");
+        createForm1.setUrl("site1");
         System.out.println(saved1);
         System.out.println(saved2);
         System.out.println(saved1.getBookmarks());
@@ -57,13 +53,13 @@ class BookmarkServiceTest {
         Bookmark save1 = testService.save(saved1.getId(), createForm1);
 
         CreateForm createForm2 = new CreateForm();
-        createForm2.setExplanation("explain2");
-        createForm2.setSiteUrl("site2");
+        createForm2.setName("explain2");
+        createForm2.setUrl("site2");
         Bookmark save2 = testService.save(saved1.getId(), createForm2);
 
         CreateForm createForm3 = new CreateForm();
-        createForm3.setExplanation("explain3");
-        createForm3.setSiteUrl("site3");
+        createForm3.setName("explain3");
+        createForm3.setUrl("site3");
         Bookmark save3 = testService.save(saved2.getId(), createForm3);
         System.out.println("------------------ after bookmark save -------------------");
     }
@@ -86,21 +82,21 @@ class BookmarkServiceTest {
         User saved1 = userRepository.save(user1);
         User saved2 = userRepository.save(user2);
         CreateForm createForm1 = new CreateForm();
-        createForm1.setExplanation("explain1");
-        createForm1.setSiteUrl("site1");
+        createForm1.setName("explain1");
+        createForm1.setUrl("site1");
         System.out.println(saved1);
         System.out.println(saved2);
         System.out.println(saved1.getBookmarks());
         Bookmark save1 = testService.save(saved1.getId(), createForm1);
 
         CreateForm createForm2 = new CreateForm();
-        createForm2.setExplanation("explain2");
-        createForm2.setSiteUrl("site2");
+        createForm2.setName("explain2");
+        createForm2.setUrl("site2");
         Bookmark save2 = testService.save(saved1.getId(), createForm2);
 
         CreateForm createForm3 = new CreateForm();
-        createForm3.setExplanation("explain3");
-        createForm3.setSiteUrl("site3");
+        createForm3.setName("explain3");
+        createForm3.setUrl("site3");
         Bookmark save3 = testService.save(saved2.getId(), createForm3);
 
         // when
@@ -117,8 +113,8 @@ class BookmarkServiceTest {
 
         // when
         UpdateForm updateForm=new UpdateForm();
-        updateForm.setSiteUrl("new site");
-        updateForm.setExplanation("new explain");
+        updateForm.setUrl("new site");
+        updateForm.setName("new explain");
         testService.update(save2.getId(), updateForm);
 
         testService.delete(save1.getId());

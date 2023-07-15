@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.net.MalformedURLException;
 
-@Controller
+//@Controller
 public class ResourceController {
 
     @Value("${file.dir}")

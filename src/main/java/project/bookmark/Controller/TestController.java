@@ -2,7 +2,6 @@ package project.bookmark.Controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -18,7 +17,7 @@ import project.bookmark.Service.TestService;
 import java.util.List;
 import java.util.Optional;
 
-@Controller
+//@Controller
 @Slf4j
 public class TestController {
 
@@ -53,8 +52,8 @@ public class TestController {
     public String updateForm(@PathVariable Long id, Model model){
         UpdateForm updateForm = new UpdateForm();
         Optional<Bookmark> byId = testService.findById(id);
-        updateForm.setSiteUrl(byId.get().getSiteUrl());
-        updateForm.setExplanation(byId.get().getExplanation());
+        updateForm.setUrl(byId.get().getUrl());
+        updateForm.setName(byId.get().getName());
 
         model.addAttribute("updateForm", updateForm);
 

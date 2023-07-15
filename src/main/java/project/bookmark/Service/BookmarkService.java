@@ -31,12 +31,25 @@ public class BookmarkService {
         this.directoryRepository = directoryRepository;
     }
 
+    public Bookmark save(CreateForm createForm){
+        Bookmark bookmark = new Bookmark();
+        bookmark.setUrl(createForm.getUrl());
+        bookmark.setName(createForm.getName());
+        Optional<Directory> directory = directoryRepository.findById(createForm.getDirectoryId());
+        if(directory.isEmpty()){
+            log.warn("save 중 해당 디렉토리 객체 없음");
+            return null;
+        }
+        bookmark.setDirectory(directory.get());
+        return bookmarkRepository.save(bookmark);
+    }
+
     public Bookmark save(Long user_id, CreateForm createForm){
         Bookmark bookmark = new Bookmark();
-        bookmark.setSiteUrl(createForm.getSiteUrl());
-        bookmark.setExplanation(createForm.getExplanation());
+        bookmark.setUrl(createForm.getUrl());
+        bookmark.setName(createForm.getName());
         Optional<User> user = userRepository.findById(user_id);
-        Optional<Directory> directory = directoryRepository.findById(createForm.getDirectory_id());
+        Optional<Directory> directory = directoryRepository.findById(createForm.getDirectoryId());
         if(user.isEmpty()){
             log.warn("save 중 해당 유저 객체 없음");
             return null;
@@ -51,6 +64,16 @@ public class BookmarkService {
 
     public void update(Long id, UpdateForm updateForm){
         bookmarkRepository.update(id, updateForm);
+    }
+
+    public List<Bookmark> findAll() {
+        List<Bookmark> bookmarks = bookmarkRepository.findAll();
+        Directory directory;
+        for(int i=0;i<bookmarks.size();i++){
+            directory = bookmarks.get(i).getDirectory();
+            log.info("\n" + directory);
+        }
+        return bookmarks;
     }
 
     public List<Bookmark> findAll(Long user_id){
@@ -70,8 +93,11 @@ public class BookmarkService {
     }
 
     public void delete(Long id){
-        Optional<Bookmark> bookmark = findById(id);
-        if(bookmark.isEmpty()) return;
-        bookmarkRepository.delete(bookmark.get());
+        bookmarkRepository.delete(id);
+    }
+
+    public boolean isInvalidBookmarkId(Long id){
+        Optional<Bookmark> bookmark = bookmarkRepository.findById(id);
+        return bookmark.isEmpty();
     }
 }

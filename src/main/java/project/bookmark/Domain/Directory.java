@@ -13,7 +13,7 @@ public class Directory {
     @Id @GeneratedValue
     @Column(name = "directory_id")
     private Long id;
-    private String directoryName;
+    private String name;
     private Long prevDirectoryId;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -31,7 +31,7 @@ public class Directory {
     public String toString() {
         return "Directory{" +
                 "id=" + id +
-                ", directoryName='" + directoryName + '\'' +
+                ", directoryName='" + name + '\'' +
                 ", prevDirectoryId=" + prevDirectoryId +
                 '}';
     }

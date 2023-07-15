@@ -7,8 +7,8 @@ import javax.validation.constraints.NotBlank;
 
 @Data
 public class UpdateForm {
-    @URL(protocol = "https")
-    private String siteUrl;
+    @URL(protocol = "https") @NotBlank
+    private String url;
     @NotBlank
-    private String explanation;
+    private String name;
 }

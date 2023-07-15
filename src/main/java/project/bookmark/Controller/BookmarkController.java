@@ -1,30 +1,28 @@
 package project.bookmark.Controller;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import project.bookmark.Config.auth.PrincipalDetails;
+import org.springframework.web.bind.annotation.*;
 import project.bookmark.Domain.Bookmark;
 import project.bookmark.Domain.Directory;
-import project.bookmark.Domain.User;
 import project.bookmark.Form.CreateForm;
+import project.bookmark.Form.ToRest.ListForm;
+import project.bookmark.Form.ToRest.TBookmark;
+import project.bookmark.Form.ToRest.TDirectory;
 import project.bookmark.Form.UpdateForm;
-import project.bookmark.Repository.BookmarkSearchCond;
 import project.bookmark.Service.BookmarkService;
 import project.bookmark.Service.DirectoryService;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
-@Controller
+@RestController
+@CrossOrigin
 @Slf4j
 public class BookmarkController {
     final BookmarkService bookmarkService;
@@ -36,68 +34,112 @@ public class BookmarkController {
     }
 
     @GetMapping("/bookmarks")
-    public String bookmarks(
-            @AuthenticationPrincipal PrincipalDetails principal,
-            Model model) {
+    public ListForm bookmarks(
+            /*@AuthenticationPrincipal PrincipalDetails principal,*/) {
         log.info("bookmark list");
-        Long user_id = principal.getUser().getId();
+        /*Long user_id = principal.getUser().getId();*/
 
         // TODO bookmark and directory call same Service (to Transaction and PersistenceContext)
-        List<Bookmark> bookmarks = bookmarkService.findAll(user_id);
+        List<Bookmark> bookmarks = bookmarkService.findAll();
         log.info("find all directory");
-        List<Directory> directories = directoryService.findByUserId(user_id);
-        model.addAttribute("bookmarks", bookmarks);
-        model.addAttribute("directories", directories);
+        List<Directory> directories = directoryService.findAll();
 
-        return "bookmarks/listForm";
+        List<TBookmark> tBookmarks = new ArrayList<>();
+        List<TDirectory> tDirectories = new ArrayList<>();
+
+        for(Bookmark it:bookmarks){
+            TBookmark tBookmark = TBookmark.builder()
+                    .id(it.getId())
+                    .url(it.getUrl())
+                    .name(it.getName())
+                    .directoryId(it.getDirectory().getId())
+                    .build();
+            tBookmarks.add(tBookmark);
+        }
+        for(Directory it:directories) {
+            TDirectory tDirectory = TDirectory.builder()
+                    .id(it.getId())
+                    .name(it.getName())
+                    .prevDirectoryId(it.getPrevDirectoryId())
+                    .build();
+            tDirectories.add(tDirectory);
+        }
+
+        ListForm listForm = new ListForm();
+        listForm.setBookmarks(tBookmarks);
+        listForm.setDirectories(tDirectories);
+
+        return listForm;
     }
 
-    @GetMapping("/bookmarks/create")
-    public String createForm(@ModelAttribute CreateForm createForm){ return "bookmarks/createForm"; }
-
-    @PostMapping("/bookmarks/create")
-    public String create(
-            @AuthenticationPrincipal PrincipalDetails principal,
-            @Validated @ModelAttribute CreateForm createForm, BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
-            return "bookmarks/createForm";
-        }
+    @PostMapping("/bookmarks")
+    public ResponseEntity<Object> create(
+            /*@AuthenticationPrincipal PrincipalDetails principal,*/
+            @Validated @RequestBody CreateForm createForm,
+            BindingResult bindingResult){
         log.info("bookmark create");
 
-        Long user_id = principal.getUser().getId();
+        /*Long user_id = principal.getUser().getId();*/
 
-        bookmarkService.save(user_id, createForm);
-
-        return "redirect:/bookmarks";
-    }
-
-    @GetMapping("/bookmarks/{id}/update")
-    public String updateForm(@PathVariable Long id, Model model){
-        UpdateForm updateForm = new UpdateForm();
-        Optional<Bookmark> byId = bookmarkService.findById(id);
-        updateForm.setSiteUrl(byId.get().getSiteUrl());
-        updateForm.setExplanation(byId.get().getExplanation());
-
-        model.addAttribute("updateForm", updateForm);
-
-        return "bookmarks/updateForm";
-    }
-
-    @PostMapping("/bookmarks/{id}/update")
-    public String update(@PathVariable Long id, @Validated @ModelAttribute UpdateForm updateForm, BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
-            return "bookmarks/updateForm";
+        if(directoryService.isInvalidDirectoryId(createForm.getDirectoryId())){
+            bindingResult.addError(
+                    new FieldError(
+                            "CreateFrom",
+                            "directoryId",
+                            "Invalid Directory Id"));
         }
+
+        // TODO directoryId TypeMismatchException Handler
+        if(bindingResult.hasErrors()){
+            log.info("but rejected by validation");
+            return ResponseEntity.badRequest().body(new ErrorMessage(bindingResult));
+        }
+
+        Bookmark save = bookmarkService.save(createForm);
+        TBookmark tBookmark = TBookmark.builder()
+                                .id(save.getId())
+                                .name(save.getName())
+                                .url(save.getUrl())
+                                .directoryId(save.getDirectory().getId())
+                                .build();
+        return ResponseEntity.ok().body(tBookmark);
+    }
+
+    @PostMapping("/bookmarks/{id}")
+    public ResponseEntity<Object> update(
+            @PathVariable Long id,
+            @Validated @RequestBody UpdateForm updateForm,
+            BindingResult bindingResult){
         log.info("bookmark update");
 
+        if(bookmarkService.isInvalidBookmarkId(id)){
+            bindingResult.addError(
+                    new ObjectError(
+                            "bookmarkId",
+                            "invalid PathVariable bookmark id"));
+        }
+
+        if(bindingResult.hasErrors()){
+            log.info("but rejected by validation");
+            return ResponseEntity.badRequest().body(new ErrorMessage(bindingResult));
+        }
+
         bookmarkService.update(id, updateForm);
-        return "redirect:/bookmarks";
+        return ResponseEntity.ok().body("ok");
     }
 
-    @PostMapping("/bookmarks/{id}/delete")
-    public String delete(@PathVariable Long id){
+    @DeleteMapping("/bookmarks/{id}")
+    public ResponseEntity<Object> delete(@PathVariable Long id) {
         log.info("bookmark delete");
+
+        if(bookmarkService.isInvalidBookmarkId(id)){
+            log.info("but rejected by invalid PathVariable id");
+            return ResponseEntity
+                    .badRequest()
+                    .body(new ErrorMessage("invalid PathVariable bookmark id"));
+        }
+
         bookmarkService.delete(id);
-        return "redirect:/bookmarks";
+        return ResponseEntity.ok().body("ok");
     }
 }

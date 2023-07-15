@@ -14,9 +14,11 @@ public interface BookmarkRepository {
 
     void update(Long bookmarkId, UpdateForm editForm);
 
-    void delete(Bookmark bookmark);
+    void delete(Long id);
 
     Optional<Bookmark> findById(Long id);
+
+    List<Bookmark> findAll();
 
     List<Bookmark> findAll(Long user_id);
 

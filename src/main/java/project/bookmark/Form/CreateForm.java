@@ -7,10 +7,10 @@ import javax.validation.constraints.NotBlank;
 
 @Data
 public class CreateForm {
-    @URL(protocol = "https")
-    private String siteUrl;
+    @URL(protocol = "https") @NotBlank
+    private String url;
     @NotBlank
-    private String explanation;
+    private String name;
 
-    private Long directory_id;
+    private Long directoryId;
 }

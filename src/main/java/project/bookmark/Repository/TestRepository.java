@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import project.bookmark.Domain.Bookmark;
-import project.bookmark.Domain.User;
 import project.bookmark.Form.UpdateForm;
 
 import java.util.ArrayList;
@@ -29,20 +28,25 @@ public class TestRepository implements BookmarkRepository{
     }
 
     @Override
+    public List<Bookmark> findAll() {
+        return null;
+    }
+
+    @Override
     public void update(Long bookmarkId, UpdateForm editForm) {
         Bookmark bookmark = store.get(bookmarkId);
         if(bookmark == null) return;
 
         store.remove(bookmarkId);
 
-        bookmark.setSiteUrl(editForm.getSiteUrl());
-        bookmark.setExplanation(editForm.getExplanation());
+        bookmark.setUrl(editForm.getUrl());
+        bookmark.setName(editForm.getName());
         store.put(bookmark.getId(),bookmark);
     }
 
     @Override
-    public void delete(Bookmark bookmark) {
-        store.remove(bookmark.getId());
+    public void delete(Long id) {
+        store.remove(id);
     }
 
     @Override
