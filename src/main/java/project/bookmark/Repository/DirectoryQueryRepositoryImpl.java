@@ -13,8 +13,8 @@ import static project.bookmark.Domain.QBookmark.bookmark;
 import static project.bookmark.Domain.QDirectory.directory;
 
 public class DirectoryQueryRepositoryImpl implements DirectoryQueryRepository{
-    EntityManager em;
-    JPAQueryFactory query;
+    private final EntityManager em;
+    private final JPAQueryFactory query;
 
     @Autowired
     public DirectoryQueryRepositoryImpl(EntityManager em) {
@@ -23,10 +23,11 @@ public class DirectoryQueryRepositoryImpl implements DirectoryQueryRepository{
     }
 
     @Override
-    public List<Directory> findBookmarksAndDirectories() {
+    public List<Directory> findBookmarksAndDirectories(Long user_id) {
         return query.select(directory).distinct()
                 .from(directory)
                 .leftJoin(directory.bookmarks).fetchJoin()
+                .where(directory.user.id.eq(user_id))
                 .fetch();
     }
 }

@@ -1,14 +1,15 @@
 package project.bookmark.Controller;
 
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import project.bookmark.Config.auth.PrincipalDetails;
 import project.bookmark.Domain.Bookmark;
 import project.bookmark.Domain.Directory;
 import project.bookmark.Form.CreateForm;
@@ -18,6 +19,7 @@ import project.bookmark.Form.ToRest.TDirectory;
 import project.bookmark.Form.UpdateForm;
 import project.bookmark.Service.BookmarkService;
 import project.bookmark.Service.DirectoryService;
+import project.bookmark.advice.ValidationError;
 
 import java.util.*;
 
@@ -34,13 +36,13 @@ public class BookmarkController {
     }
 
     @GetMapping("/bookmarks")
-    public ListForm bookmarks(
-            /*@AuthenticationPrincipal PrincipalDetails principal,*/) {
+    public ListForm bookmarks(Authentication authentication) {
         log.info("bookmark list");
-        /*Long user_id = principal.getUser().getId();*/
 
-        // TODO bookmark and directory call same Service (to Transaction and PersistenceContext)
-        List<Directory> directories = directoryService.findDirectoriesAndBookmarks();
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        Long user_id = principalDetails.getUser().getId();
+
+        List<Directory> directories = directoryService.findDirectoriesAndBookmarks(user_id);
 
         List<TBookmark> tBookmarks = new ArrayList<>();
         List<TDirectory> tDirectories = new ArrayList<>();
@@ -72,12 +74,13 @@ public class BookmarkController {
 
     @PostMapping("/bookmarks")
     public ResponseEntity<Object> create(
-            /*@AuthenticationPrincipal PrincipalDetails principal,*/
+            Authentication authentication,
             @Validated @RequestBody CreateForm createForm,
             BindingResult bindingResult){
         log.info("bookmark create");
 
-        /*Long user_id = principal.getUser().getId();*/
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        Long user_id = principalDetails.getUser().getId();
 
         if(directoryService.isInvalidDirectoryId(createForm.getDirectoryId())){
             bindingResult.addError(
@@ -90,10 +93,10 @@ public class BookmarkController {
         // TODO directoryId TypeMismatchException Handler
         if(bindingResult.hasErrors()){
             log.info("but rejected by validation");
-            return ResponseEntity.badRequest().body(new ErrorMessage(bindingResult));
+            return ResponseEntity.badRequest().body(new ValidationError(bindingResult));
         }
 
-        Bookmark save = bookmarkService.save(createForm);
+        Bookmark save = bookmarkService.save(user_id, createForm);
         TBookmark tBookmark = TBookmark.builder()
                                 .id(save.getId())
                                 .name(save.getName())
@@ -119,7 +122,7 @@ public class BookmarkController {
 
         if(bindingResult.hasErrors()){
             log.info("but rejected by validation");
-            return ResponseEntity.badRequest().body(new ErrorMessage(bindingResult));
+            return ResponseEntity.badRequest().body(new ValidationError(bindingResult));
         }
 
         bookmarkService.update(id, updateForm);
@@ -134,7 +137,7 @@ public class BookmarkController {
             log.info("but rejected by invalid PathVariable id");
             return ResponseEntity
                     .badRequest()
-                    .body(new ErrorMessage("invalid PathVariable bookmark id"));
+                    .body(new ValidationError("invalid PathVariable bookmark id"));
         }
 
         bookmarkService.delete(id);

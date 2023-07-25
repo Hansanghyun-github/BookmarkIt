@@ -1,4 +1,4 @@
-package project.bookmark.Controller;
+package project.bookmark.advice;
 
 import lombok.Getter;
 import org.springframework.validation.BindingResult;
@@ -9,15 +9,15 @@ import java.util.List;
 import java.util.Map;
 
 @Getter
-public class ErrorMessage {
+public class ValidationError {
     private List<String> globalErrors = new ArrayList<>();
     private Map<String, String> fieldErrors = new HashMap<>();
 
-    public ErrorMessage(String str) {
+    public ValidationError(String str) {
         globalErrors.add(str);
     }
 
-    public ErrorMessage(BindingResult bindingResult){
+    public ValidationError(BindingResult bindingResult){
         bindingResult.getGlobalErrors().forEach(it -> {
             globalErrors.add(it.getDefaultMessage());
         });

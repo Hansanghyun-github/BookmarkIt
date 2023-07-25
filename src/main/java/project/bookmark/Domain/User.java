@@ -6,12 +6,13 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Builder
 @Getter @Setter
 @Entity
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Table(name = "users")
 public class User {
@@ -20,7 +21,6 @@ public class User {
     private Long id;
     private String username;
     private String password;
-    private String email;
     private Role role; // ROLE_USER, ROLE_ADMIN;
     private String provider;
     private String providerId;
@@ -33,6 +33,12 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Directory> directories = new ArrayList<>();
 
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+        role=Role.ROLE_USER;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -41,5 +47,9 @@ public class User {
                 ", role=" + role +
                 ", createDate=" + createDate +
                 '}';
+    }
+
+    public List<Role> getRoleList() {
+        return Arrays.asList(Role.values());
     }
 }

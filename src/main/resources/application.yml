@@ -20,6 +20,8 @@ spring:
 logging.level:
   org.hibernate.SQL: debug
   org.hibernate.type: trace #스프링 부트 2.x, hibernate5
+  org.springframework.security: trace
+  project.bookmark: debug
 
 file:
   dir: C:/Users/한상현/Desktop/ToyProject/BookmarkProject/bookmark/src/main/resources/static/icon/

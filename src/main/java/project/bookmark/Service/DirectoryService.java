@@ -25,6 +25,7 @@ public class DirectoryService {
         this.userRepository = userRepository;
     }
 
+    // TODO 인증,인가 기능 추가후 삭제
     public Directory save(DirectoryForm directoryForm){
 
         Directory directory=new Directory();
@@ -64,8 +65,8 @@ public class DirectoryService {
         return directoryRepository.findAll();
     }
 
-    public List<Directory> findDirectoriesAndBookmarks() {
-        return directoryRepository.findBookmarksAndDirectories();
+    public List<Directory> findDirectoriesAndBookmarks(Long user_id) {
+        return directoryRepository.findBookmarksAndDirectories(user_id);
     }
 
     public List<Directory> findByUserId(Long user_id){
@@ -76,20 +77,25 @@ public class DirectoryService {
         directoryRepository.deleteById(id);
     }
 
-    public Long createRootDirectory(Long user_id){
+    // TODO 이미 앞에서 유저 확인했으니 또 find 할필요없음
+    public void createTwoDirectoryForNewUser(Long user_id){
         Optional<User> user = userRepository.findById(user_id);
         if(user.isEmpty()){
 
-            return null;
+            return;
         }
 
-        Directory directory = new Directory();
-        directory.setName("root");
-        directory.setUser(user.get());
-        Directory save = directoryRepository.save(directory);
-        save.setPrevDirectoryId(save.getId());
+        Directory directory1 = new Directory();
+        directory1.setName("root");
+        directory1.setUser(user.get());
+        Directory save1 = directoryRepository.save(directory1);
+        save1.setPrevDirectoryId(save1.getId());
 
-        return save.getId();
+        Directory directory2 = new Directory();
+        directory2.setName("sub folder");
+        directory2.setUser(user.get());
+        Directory save2 = directoryRepository.save(directory2);
+        save2.setPrevDirectoryId(save2.getId());
     }
 
     public boolean isInvalidDirectoryId(Long id){

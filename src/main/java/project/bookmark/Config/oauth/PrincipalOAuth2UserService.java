@@ -2,7 +2,6 @@ package project.bookmark.Config.oauth;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -12,9 +11,6 @@ import project.bookmark.Config.auth.PrincipalDetails;
 import project.bookmark.Domain.User;
 import project.bookmark.Form.UserForm;
 import project.bookmark.Service.UserService;
-
-import java.util.ArrayList;
-import java.util.Optional;
 
 
 @Service
@@ -30,7 +26,7 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
     // OAuth2 인증 성공했을때 실행되는 함수
     @Override // TODO 구글 검증, 다른 검증 인터페이스 추가해서 제대로 정리하기
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2User oAuth2User = super.loadUser(userRequest);
+        /*OAuth2User oAuth2User = super.loadUser(userRequest);
         log.info("OAuth2 login");
 
         String provider = userRequest.getClientRegistration().getClientId(); // google
@@ -55,7 +51,8 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
         else // TODO 너무 비효율적인데 - duplicate, find 2번임
             save = userService.findByUsername(username).get();
 
-        return new PrincipalDetails(save, oAuth2User.getAttributes());
+        return new PrincipalDetails(save, oAuth2User.getAttributes());*/
+        return null;
     }
 
 }
