@@ -82,7 +82,7 @@ public class BookmarkController {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Long user_id = principalDetails.getUser().getId();
 
-        if(directoryService.isInvalidDirectoryId(createForm.getDirectoryId())){
+        if(directoryService.isInvalidDirectoryId(createForm.getDirectoryId(), user_id)){
             bindingResult.addError(
                     new FieldError(
                             "CreateFrom",

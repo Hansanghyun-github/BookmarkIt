@@ -34,7 +34,10 @@ public class DirectoryController {
             BindingResult bindingResult){
         log.info("directory create");
 
-        if(directoryService.isInvalidDirectoryId(directoryForm.getPrevDirectoryId())){
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        Long user_id = principalDetails.getUser().getId();
+
+        if(directoryService.isInvalidDirectoryId(directoryForm.getPrevDirectoryId(), user_id)){
             bindingResult.addError(
                     new FieldError(
                             "DirectoryForm",
@@ -47,8 +50,6 @@ public class DirectoryController {
             return ResponseEntity.badRequest().body(new ValidationError(bindingResult));
         }
 
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        Long user_id = principalDetails.getUser().getId();
 
         Directory save = directoryService.save(user_id, directoryForm);
         TDirectory tDirectory = TDirectory.builder()
@@ -60,8 +61,12 @@ public class DirectoryController {
     }
 
     @DeleteMapping("/directories/{id}")
-    public ResponseEntity<Object> delete(@PathVariable Long id) {
-        if(directoryService.isInvalidDirectoryId(id)){
+    public ResponseEntity<Object> delete(
+            Authentication authentication,
+            @PathVariable Long id) {
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        Long user_id = principalDetails.getUser().getId();
+        if(directoryService.isInvalidDirectoryId(id, user_id)){
             return ResponseEntity.badRequest().body(new ValidationError("invalid PathVariable directory id"));
         }
 

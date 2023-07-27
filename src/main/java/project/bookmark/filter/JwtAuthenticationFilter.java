@@ -132,5 +132,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 						failed.getMessage(),
 						"Authentication failed"));
 		response.getWriter().write(result);
+		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 	}
 }

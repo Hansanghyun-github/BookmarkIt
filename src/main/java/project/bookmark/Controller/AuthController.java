@@ -4,15 +4,22 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import project.bookmark.Config.auth.PrincipalDetails;
 import project.bookmark.Domain.RefreshToken;
 import project.bookmark.Domain.User;
 import project.bookmark.Service.DirectoryService;
 import project.bookmark.Service.RefreshTokenService;
 import project.bookmark.Service.UserService;
+import project.bookmark.advice.ValidationError;
+import project.bookmark.dto.DuplicateDto;
 import project.bookmark.dto.JoinRequestDto;
 import project.bookmark.dto.RefreshTokenDto;
 import project.bookmark.jwt.JwtProperties;
@@ -29,13 +36,18 @@ public class AuthController {
     private final DirectoryService directoryService;
 
     @PostMapping("join")
-    public String joinUser(@RequestBody JoinRequestDto joinRequestDto){
+    public ResponseEntity<Object> joinUser(@Validated @RequestBody JoinRequestDto joinRequestDto, BindingResult bindingResult){
         log.debug("join start");
+
+        if(bindingResult.hasErrors()){
+            return ResponseEntity.badRequest().body(new ValidationError(bindingResult));
+        }
+
         Long savedId = userService.save(joinRequestDto);
 
         directoryService.createTwoDirectoryForNewUser(savedId);
 
-        return "join success";
+        return ResponseEntity.ok().body("join success");
     }
 
     @PostMapping("refreshtoken")
@@ -62,9 +74,16 @@ public class AuthController {
         return new JwtResponse(JwtProperties.TOKEN_PREFIX + jwtToken, newRefreshToken.getToken());
     }
 
-    @PostMapping("logout")
-    public String logout(){
+    @PostMapping("duplicate")
+    public boolean isDuplicated(@RequestBody DuplicateDto duplicateDto){
+        return userService.isDuplicate(duplicateDto.getUsername());
+    }
 
+    @PostMapping("logout")
+    public String logout(Authentication authentication){
+        PrincipalDetails principal = (PrincipalDetails)authentication.getPrincipal();
+        User user = principal.getUser();
+        refreshTokenService.deleteRefreshToken(user.getId());
         return "logout success";
     }
 }

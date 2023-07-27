@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import project.bookmark.Controller.AuthController;
 import project.bookmark.exception.InValidRefreshException;
+import project.bookmark.exception.TokenRefreshException;
 
 import java.util.Date;
 
@@ -27,6 +28,16 @@ public class TokenControllerAdvice {
     @ExceptionHandler(InValidRefreshException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorMessage handleInValidRefreshException(InValidRefreshException ex, WebRequest request){
+        return new ErrorMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false));
+    }
+
+    @ExceptionHandler(TokenRefreshException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorMessage handleTokenRefreshException(TokenRefreshException ex, WebRequest request){
         return new ErrorMessage(
                 HttpStatus.BAD_REQUEST.value(),
                 new Date(),

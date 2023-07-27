@@ -2,6 +2,7 @@ package project.bookmark.Domain;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -19,8 +20,10 @@ public class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
+    @Column(unique = true)
     private String username;
     private String password;
+    @Enumerated(value = EnumType.STRING)
     private Role role; // ROLE_USER, ROLE_ADMIN;
     private String provider;
     private String providerId;

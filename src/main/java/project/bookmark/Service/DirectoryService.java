@@ -98,8 +98,12 @@ public class DirectoryService {
         save2.setPrevDirectoryId(save2.getId());
     }
 
-    public boolean isInvalidDirectoryId(Long id){
-        Optional<Directory> directory = directoryRepository.findById(id);
-        return directory.isEmpty();
+    public boolean isInvalidDirectoryId(Long id, Long user_id){
+        Optional<Directory> directory = directoryRepository.findByIdEntityGraph(id);
+        if(directory.isEmpty())
+            return true;
+        if(directory.isPresent() && directory.get().getUser().getId() != user_id)
+            return true;
+        return false;
     }
 }

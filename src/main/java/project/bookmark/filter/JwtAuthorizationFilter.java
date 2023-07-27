@@ -39,11 +39,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 		// TODO check 할 필요 없는 url 을 그냥 넘기는 코드 추가
 		// TODO 여기서 exception 터졌을때 처리해주는 filter 생성
 
-		log.debug("Authorization check start");
 		String header = request.getHeader(JwtProperties.HEADER_STRING);
 		if (header == null || !header.startsWith(JwtProperties.TOKEN_PREFIX)) {
-			log.debug("access token is null");
-
 			try{
 				chain.doFilter(request, response);
 			} catch (org.springframework.security.access.AccessDeniedException e){
@@ -64,8 +61,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
 			return;
 		}
-		log.debug("access token is not null");
-		log.debug(" header : " + header);
 		String token = request.getHeader(JwtProperties.HEADER_STRING)
 				.replace(JwtProperties.TOKEN_PREFIX, "");
 

@@ -65,4 +65,8 @@ public class RefreshTokenService {
         refreshToken.refreshTokenRotation();
         return refreshToken;
     }
+
+    public void deleteRefreshToken(Long user_id){
+        refreshTokenRepository.deleteByUserId(user_id);
+    }
 }
