@@ -38,7 +38,7 @@ public class JwtProperties {
 	@PostConstruct
 	private void initialize(){
 		SECRET=secret;
-		TOKEN_PREFIX=tokenPrefix;
+		TOKEN_PREFIX=tokenPrefix + " ";
 		HEADER_STRING=headerString;
 
 		String[] strings1 = accessTokenExpirationTime.split("[*]");

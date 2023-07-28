@@ -1,9 +1,6 @@
 package project.bookmark.filter;
 
-import com.auth0.jwt.exceptions.IncorrectClaimException;
-import com.auth0.jwt.exceptions.MissingClaimException;
-import com.auth0.jwt.exceptions.SignatureVerificationException;
-import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.auth0.jwt.exceptions.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -23,6 +20,7 @@ public class JwtExceptionHandlingFilter extends OncePerRequestFilter {
         } catch (IllegalArgumentException |
                  SignatureVerificationException |
                  TokenExpiredException |
+                 JWTDecodeException |
                  MissingClaimException |
                  IncorrectClaimException ex){
             ObjectMapper mapper = new ObjectMapper();

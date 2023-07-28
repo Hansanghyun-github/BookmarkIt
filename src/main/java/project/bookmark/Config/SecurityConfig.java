@@ -79,7 +79,7 @@ public class SecurityConfig {
             http
                     .addFilterBefore(corsConfig.corsFilter(), LogoutFilter.class)
                     .addFilterAfter(new JwtAuthorizationFilter(userRepository)
-                            ,LogoutFilter.class)
+                            ,ExceptionTranslationFilter.class)
                     .addFilterBefore(new JwtAuthenticationFilter(authenticationManager, refreshTokenService)
                             , JwtAuthorizationFilter.class)
                     .addFilterBefore(new JwtExceptionHandlingFilter(), JwtAuthorizationFilter.class);
