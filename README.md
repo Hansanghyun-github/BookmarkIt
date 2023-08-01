@@ -38,12 +38,14 @@ BookmarkIt을 이용해 여러분이 즐겨찾는 웹사이트를 저장하세�
 ---
 
 ## ⚙시스템 아키텍처
-![시스템아키텍쳐](https://github.com/Hansanghyun-github/BookmarkIt/assets/56988779/29b88ff8-1014-4b93-b884-e5bcb7547899)
+![시스템아키텍쳐](https://github.com/Hansanghyun-github/BookmarkIt/assets/56988779/210a47c1-f58d-4e99-9772-11688a3408e6)
+
 
 ---
 
 ## 🏗️ERD 다이어그램
-![ERD](https://github.com/Hansanghyun-github/BookmarkIt/assets/56988779/c0269eb7-18d7-49e7-87b4-ec6970368a38)
+![ERD](https://github.com/Hansanghyun-github/BookmarkIt/assets/56988779/5e297c0b-b7df-4dcc-8ada-c80b4c27578e)
+
 
 
 
