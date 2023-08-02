@@ -6,9 +6,6 @@ BookmarkIt을 이용해 여러분이 즐겨찾는 웹사이트를 저장하세�
 ---
 
 ## ✨프로젝트 설명
-처음에 로그인을 진행하면 액세스 토큰이 발급됩니다.
-
-이 토크을 이용하여 로그인 대신 인증이 됩니다.
 
 사용자가 원하는 웹사이트의 url과 별명을 관리할 수 있습니다.
 
@@ -30,6 +27,7 @@ BookmarkIt을 이용해 여러분이 즐겨찾는 웹사이트를 저장하세�
 
 - **Spring Security** 를 사용했습니다.
 - 스프링 시큐리티의 세션방식이 아닌 **JWT** 토큰 방식을 이용해서 인증을 진행했습니다.
+- JWT 액세스 토큰을 발급할때 refresh token을 같이 발급하여 보안을 강화했습니다.
 
 **인프라**
 
@@ -46,8 +44,10 @@ BookmarkIt을 이용해 여러분이 즐겨찾는 웹사이트를 저장하세�
 ## 🏗️ERD 다이어그램
 ![ERD](https://github.com/Hansanghyun-github/BookmarkIt/assets/56988779/5e297c0b-b7df-4dcc-8ada-c80b4c27578e)
 
+---
 
-
+## 🏗️API 명세서
+https://s-private-organization.gitbook.io/bookmark-project
 
 ---
 
